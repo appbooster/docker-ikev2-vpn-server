@@ -20,8 +20,8 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
 # Create cert dir
 RUN mkdir -p /data/key_files
 
-COPY ./etc/ /etc/
-COPY ./bin/ /usr/bin/
+COPY ./etc/ipsec.conf /usr/local/etc/ipsec.conf
+COPY ./bin/start-vpn /usr/bin/start-vpn
 
 RUN chmod 755 /usr/bin/start-vpn
 
