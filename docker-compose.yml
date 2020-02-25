@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  vpn:
+    build: .
+    volumes:
+      - '.:/vpn'
+    command: /usr/bin/start-vpn
+    privileged: true
+    environment:
+      - VPNHOST=vpn1.drzhn.in
+      - EMAILADDR=andrey@drzhn.in
+      - VPNUSERNAME=testuser
+      - VPNPASSWORD=testuser1
