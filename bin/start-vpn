@@ -55,17 +55,24 @@ rm -f /var/run/starter.charon.pid
 
 # Create certificate
 cd /data/key_files
-ipsec pki --gen --outform pem > ca.pem
-ipsec pki --self --in ca.pem --dn "C=cn, O=ilove, CN=vpn.drzhn.in" --ca --lifetime 3650 --outform pem >ca.cert.pem
-ipsec pki --gen --outform pem > server.pem
-ipsec pki --pub --in server.pem | ipsec pki --issue --lifetime 1200 --cacert ca.cert.pem --cakey ca.pem --dn "C=cn, O=ilove, CN=vpn.drzhn.in" --san="vpn.drzhn.in" --flag serve rAuth --flag ikeIntermediate --outform pem > server.cert.pem
+ipsec pki --gen --type rsa --size 4096 --outform pem > ca-key.pem #private
+ipsec pki --self --ca --lifetime 3650 --in ca-key.pem --type rsa --dn "CN=VPN root CA" --outform pem > ca-cert.pem #cacerts
+ipsec pki --gen --type rsa --size 4096 --outform pem > server-key.pem #private
+ipsec pki --pub --in ~/pki/private/server-key.pem --type rsa \
+    | ipsec pki --issue --lifetime 1825 \
+        --cacert ~/pki/cacerts/ca-cert.pem \
+        --cakey ~/pki/private/ca-key.pem \
+        --dn "CN=vpn.drzhn.in" --san "vpn.drzhn.in" \
+        --flag serverAuth --flag ikeIntermediate --outform pem \
+    > server-cert.pem #certs
 
 # Copy certificate to ipsec dir
-\cp ca.cert.pem /usr/local/etc/ipsec.d/cacerts/
-\cp server.cert.pem /usr/local/etc/ipsec.d/certs/
-\cp server.pem /usr/local/etc/ipsec.d/private/
+\cp ca-cert.pem /usr/local/etc/ipsec.d/cacerts/
+\cp server-cert.pem /usr/local/etc/ipsec.d/certs/
+\cp ca-key.pem /usr/local/etc/ipsec.d/private/
+\cp server-key.pem /usr/local/etc/ipsec.d/private/
 
-echo "${VPNHOST} : RSA \"server.pem\"
+echo "${VPNHOST} : RSA \"server-key.pem\"
 testuser : EAP \"testuser1\"
 " > /usr/local/etc/ipsec.secrets
 
