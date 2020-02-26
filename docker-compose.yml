@@ -7,17 +7,6 @@ services:
       - '.:/vpn'
     command: /usr/bin/start-vpn
     privileged: true
-    environment:
-      - VIRTUAL_HOST=vpn.drzhn.in
-      - VPNHOST=vpn.drzhn.in
-      - EMAILADDR=andrey@drzhn.in
-      - VPNPASSWORD=testuser1
-      - LETSENCRYPT_HOST=vpn.drzhn.in
-      - LETSENCRYPT_EMAIL=andrey.druginin@gmail.com
     ports:
       - '500:500/udp'
       - '4500:4500/udp'
-networks:
-  default:
-    external:
-      name: fluo

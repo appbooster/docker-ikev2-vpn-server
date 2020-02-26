@@ -21,6 +21,7 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
 RUN mkdir -p /data/key_files
 
 COPY ./etc/ipsec.conf /usr/local/etc/ipsec.conf
+COPY ./etc/sysctl.conf /etc/ipsec.conf
 COPY ./bin/start-vpn /usr/bin/start-vpn
 
 RUN chmod 755 /usr/bin/start-vpn

@@ -69,4 +69,6 @@ echo "${VPNHOST} : RSA \"server.pem\"
 testuser : EAP \"testuser1\"
 " > /usr/local/etc/ipsec.secrets
 
+sysctl -p
+
 ipsec start --nofork
