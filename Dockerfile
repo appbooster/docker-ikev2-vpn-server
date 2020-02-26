@@ -18,7 +18,8 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Create cert dir
-RUN mkdir -p /data/key_files
+RUN mkdir -p ~/pki/{cacerts,certs,private}
+RUN chmod 700 ~/pki
 
 COPY ./etc/ipsec.conf /usr/local/etc/ipsec.conf
 COPY ./etc/sysctl.conf /etc/ipsec.conf
