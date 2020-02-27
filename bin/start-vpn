@@ -1,73 +1,12 @@
 #!/bin/bash
 
-VPNIPPOOL="10.101.0.0/16"
-ETH0ORSIMILAR=$(ip route get 1.1.1.1 | awk -- '{printf $5}')
+VPNIPPOOL="10.15.1.0/24"
 
-iptables -P INPUT   ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -P OUTPUT  ACCEPT
-
-iptables -F
-iptables -t nat -F
-iptables -t mangle -F
-
-# INPUT
-
-# accept anything already accepted
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# accept anything on the loopback interface
-iptables -A INPUT -i lo -j ACCEPT
-
-# drop invalid packets
-iptables -A INPUT -m state --state INVALID -j DROP
-
-# rate-limit repeated new requests from same IP to any ports
-iptables -I INPUT -i "${ETH0ORSIMILAR}" -m state --state NEW -m recent --set
-iptables -I INPUT -i "${ETH0ORSIMILAR}" -m state --state NEW -m recent --update --seconds 300 --hitcount 60 -j DROP
-
-# VPN
-
-# accept IPSec/NAT-T for VPN (ESP not needed with forceencaps, as ESP goes inside UDP)
-iptables -A INPUT -p udp --dport  500 -j ACCEPT
-iptables -A INPUT -p udp --dport 4500 -j ACCEPT
-
-# forward VPN traffic anywhere
-iptables -A FORWARD --match policy --pol ipsec --dir in  --proto esp -s "${VPNIPPOOL}" -j ACCEPT
-iptables -A FORWARD --match policy --pol ipsec --dir out --proto esp -d "${VPNIPPOOL}" -j ACCEPT
-
-# reduce MTU/MSS values for dumb VPN clients
-iptables -t mangle -A FORWARD --match policy --pol ipsec --dir in -s "${VPNIPPOOL}" -o "${ETH0ORSIMILAR}" -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 -j TCPMSS --set-mss 1360
-
-# masquerade VPN traffic over eth0 etc.
-iptables -t nat -A POSTROUTING -s "${VPNIPPOOL}" -o "${ETH0ORSIMILAR}" -m policy --pol ipsec --dir out -j ACCEPT  # exempt IPsec traffic from masquerading
-iptables -t nat -A POSTROUTING -s "${VPNIPPOOL}" -o "${ETH0ORSIMILAR}" -j MASQUERADE
-
-
-# fall through to drop any other input and forward traffic
-
-iptables -A INPUT   -j DROP
-iptables -A FORWARD -j DROP
+iptables -t nat -A POSTROUTING -s "${VPNIPPOOL}" -j MASQUERADE
 
 iptables -L
 
 rm -f /var/run/starter.charon.pid
-
-# Create certificate
-cd /data/key_files
-ipsec pki --gen --type rsa --size 4096 --outform pem > /data/key_files/private/ca-key.pem
-ipsec pki --self --ca --lifetime 3650 --in /data/key_files/private/ca-key.pem --type rsa --dn "CN=VPN root CA" --outform pem > /data/key_files/cacerts/ca-cert.pem
-ipsec pki --gen --type rsa --size 4096 --outform pem > /data/key_files/private/server-key.pem
-ipsec pki --pub --in /data/key_files/private/server-key.pem --type rsa \
-    | ipsec pki --issue --lifetime 1825 \
-        --cacert /data/key_files/cacerts/ca-cert.pem \
-        --cakey /data/key_files/private/ca-key.pem \
-        --dn "CN=vpn.drzhn.in" --san "vpn.drzhn.in" \
-        --flag serverAuth --flag ikeIntermediate --outform pem \
-    > /data/key_files/certs/server-cert.pem
-
-# Copy certificate to ipsec dir
-cp -r /data/key_files/* /usr/local/etc/ipsec.d/
 
 echo "${VPNHOST} : RSA \"server-key.pem\"
 testuser : EAP \"testuser1\"
