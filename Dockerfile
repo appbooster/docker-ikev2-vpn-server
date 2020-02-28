@@ -1,6 +1,7 @@
 FROM alpine:latest
 
 ENV VPNHOST ''
+ENV LEEMAIL ''
 ENV TZ=Europe/Moscow
 
 # strongSwan Version
@@ -18,18 +19,14 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Create cert dir
-RUN mkdir -p /data/key_files
-RUN mkdir /data/key_files/cacerts
-RUN mkdir /data/key_files/certs
-RUN mkdir /data/key_files/private
+RUN mkdir /data
 
-COPY ./etc/ipsec.conf /usr/local/etc/ipsec.conf
-COPY ./etc/sysctl.conf /etc/ipsec.conf
 COPY ./bin/start-vpn /usr/bin/start-vpn
 
 RUN chmod 755 /usr/bin/start-vpn
 
 VOLUME /etc
+VOLUME /data
 
 # Open udp 500\4500 port
 EXPOSE 500:500/udp 4500:4500/udp

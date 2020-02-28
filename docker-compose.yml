@@ -3,10 +3,12 @@ version: '3'
 services:
   vpn:
     build: .
-    volumes:
-      - '.:/vpn'
     command: /usr/bin/start-vpn
     privileged: true
     ports:
       - '500:500/udp'
       - '4500:4500/udp'
+      - '80:80'
+    environment:
+      - VPNHOST=
+      - LEEMAIL=
