@@ -1,3 +1,9 @@
+#!/bin/sh
+#
+# Docker script to configure and start an IPsec VPN server
+#
+# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS ONLY MEANT TO BE RUN
+# IN A DOCKER CONTAINER!
 #!/bin/bash
 
 VPNIPPOOL="10.15.1.0/24"
@@ -11,14 +17,6 @@ iptables -t nat -A POSTROUTING -s ${VPNIPPOOL} -o eth0 -m policy --dir out --pol
 iptables -t nat -A POSTROUTING -s ${VPNIPPOOL} -o eth0 -j MASQUERADE
 
 iptables -L
-
-rm -f /var/run/starter.charon.pid
-
-# Get certificate to ipsec dir
-certbot certonly --standalone --preferred-challenges http --agree-tos --no-eff-email --email ${LEEMAIL} -d ${VPNHOST}
-cp /etc/letsencrypt/live/${VPNHOST}/fullchain.pem /usr/local/etc/ipsec.d/certs
-cp /etc/letsencrypt/live/${VPNHOST}/privkey.pem /usr/local/etc/ipsec.d/private
-curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem --output /usr/local/etc/ipsec.d/cacerts/lets-encrypt-x3-cross-signed.pem
 
 cat >> /usr/local/etc/ipsec.conf <<EOF
 config setup
@@ -52,9 +50,8 @@ conn ikev2-vpn
 EOF
 
 echo ": RSA privkey.pem
-testuser : EAP \"testuser1\"
 " > /usr/local/etc/ipsec.secrets
 
-sysctl -p
+rm -f /var/run/starter.charon.pid
 
 ipsec start --nofork
