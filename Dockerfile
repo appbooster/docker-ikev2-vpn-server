@@ -24,8 +24,5 @@ COPY ./bin/start-vpn /usr/bin/start-vpn
 
 RUN chmod 755 /usr/bin/start-vpn
 
-VOLUME /etc
-VOLUME /data
-
 # Open udp 500\4500 port
 EXPOSE 500:500/udp 4500:4500/udp
