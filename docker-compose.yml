@@ -11,4 +11,3 @@ services:
       - '80:80'
     environment:
       - VPNHOST=
-      - LEEMAIL=

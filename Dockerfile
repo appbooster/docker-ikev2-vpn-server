@@ -1,7 +1,6 @@
 FROM alpine:latest
 
 ENV VPNHOST ''
-ENV LEEMAIL ''
 ENV TZ=Europe/Moscow
 
 # strongSwan Version
