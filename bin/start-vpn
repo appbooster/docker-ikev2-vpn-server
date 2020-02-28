@@ -2,7 +2,8 @@
 
 VPNIPPOOL="10.15.1.0/24"
 
-iptables -t nat -A POSTROUTING -s "${VPNIPPOOL}" -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.15.1.0/24 -o eth0 -m policy --dir out --pol ipsec -j ACCEPT
+iptables -t nat -A POSTROUTING -s 10.15.1.0/24 -o eth0 -j MASQUERADE
 
 iptables -L
 
