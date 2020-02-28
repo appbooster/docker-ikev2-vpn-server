@@ -1,6 +1,7 @@
 FROM alpine:latest
 
 ENV VPNHOST ''
+ENV LEEMAIL ''
 ENV TZ=Europe/Moscow
 
 # strongSwan Version
@@ -16,9 +17,6 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
     && ./configure  --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-tls --enable-eap-ttls --enable-eap-peap --enable-eap-tnc --enable-eap-dynamic --enable-xauth-eap  --enable-dhcp  --enable-openssl  --enable-addrblock --enable-unity --enable-certexpire --enable-radattr --enable-swanctl --enable-openssl --disable-gmp && make && make install \
     && rm -rf /tmp/* && apk del build-base curl openssl-dev build_deps && rm -rf /var/cache/apk/* \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# Create cert dir
-RUN mkdir /data
 
 COPY ./bin/start-vpn /usr/bin/start-vpn
 
