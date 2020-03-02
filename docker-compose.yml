@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  vpn:
+    build: .
+    command: /usr/bin/start-vpn
+    container_name: ikev2-server
+    privileged: true
+    volumes:
+      - './data/certs:/etc/letsencrypt/live'
+    environment:
+      - VPNHOST=
+      - LEEMAIL=
+    ports:
+      - '500:500/udp'
+      - '4500:4500/udp'
+      - '80:80'
+  

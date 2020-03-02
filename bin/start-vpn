@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 VPNIPPOOL="10.15.1.0/24"
 LEFT_ID=${VPNHOST}
@@ -12,7 +12,12 @@ iptables -t nat -A POSTROUTING -s ${VPNIPPOOL} -o eth0 -j MASQUERADE
 
 iptables -L
 
-rm /usr/local/etc/ipsec.conf
+certbot certonly --standalone --preferred-challenges http --agree-tos --no-eff-email --email ${LEEMAIL} -d ${VPNHOST}
+cp /etc/letsencrypt/live/${VPNHOST}/fullchain.pem /usr/local/etc/ipsec.d/certs
+cp /etc/letsencrypt/live/${VPNHOST}/privkey.pem /usr/local/etc/ipsec.d/private
+wget -P /usr/local/etc/ipsec.d/cacerts https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
+
+rm -f /var/run/starter.charon.pid
 
 cat >> /usr/local/etc/ipsec.conf <<EOF
 config setup
@@ -46,11 +51,9 @@ conn ikev2-vpn
 EOF
 
 echo ": RSA privkey.pem
+testuser : EAP \"testuser1\"
 " > /usr/local/etc/ipsec.secrets
 
-certbot certonly --standalone --preferred-challenges http --agree-tos --no-eff-email --email ${LEEMAIL} -d ${VPNHOST}
-cp /etc/letsencrypt/live/${VPNHOST}/fullchain.pem /usr/local/etc/ipsec.d/certs
-cp /etc/letsencrypt/live/${VPNHOST}/privkey.pem /usr/local/etc/ipsec.d/private
-wget -P /usr/local/etc/ipsec.d/cacerts https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
+sysctl -p
 
-ipsec update
+ipsec start --nofork
