@@ -53,4 +53,4 @@ cp /etc/letsencrypt/live/${VPNHOST}/fullchain.pem /usr/local/etc/ipsec.d/certs
 cp /etc/letsencrypt/live/${VPNHOST}/privkey.pem /usr/local/etc/ipsec.d/private
 wget -P /usr/local/etc/ipsec.d/cacerts https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
 
-ipsec restart
+ipsec update
