@@ -15,7 +15,7 @@ docker run \
     -p 4500:4500/udp \
     -p 80:80 \
     -v /lib/modules:/lib/modules:ro \
-    - v ./data:/usr/local/etc \
+    -v ./data:/usr/local/etc \
     --env VPNHOST=$VPNHOST \
     --env LEEMAIL=$LEEMAIL \
     -d --privileged \
