@@ -32,10 +32,10 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY ./adduser.sh /adduser.sh
-COPY ./letsencrypt.sh /letsencrypt.sh
+COPY ./setup.sh /setup.sh
 COPY ./run.sh /run.sh
 
-RUN chmod 755 /adduser.sh /letsencrypt.sh /run.sh
+RUN chmod 755 /adduser.sh /setup.sh /run.sh
 
 # Open udp 500\4500 port
 EXPOSE 500:500/udp 4500:4500/udp
