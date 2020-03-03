@@ -58,10 +58,11 @@ conn ikev2-vpn
 EOF
 fi
 
+if [ ! -f "/usr/local/etc/ipsec.secrets" ]; then
 cat > /usr/local/etc/ipsec.secrets <<EOF
 : RSA privkey.pem
 EOF
-
+fi
 sysctl -p
 
 ipsec start --nofork
