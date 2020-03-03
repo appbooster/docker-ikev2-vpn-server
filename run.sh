@@ -13,7 +13,7 @@ iptables -t nat -A POSTROUTING -s ${VPNIPPOOL} -o eth0 -j MASQUERADE
 iptables -L
 
 if [[ ! -f "/etc/ipsec.d/certs/fullchain.pem" && ! -f "/etc/ipsec.d/private/privkey.pem" ]] ; then
-    # certbot certonly --standalone --preferred-challenges http --agree-tos --no-eff-email --email ${LEEMAIL} -d ${VPNHOST}
+    certbot certonly --standalone --preferred-challenges http --agree-tos --no-eff-email --email ${LEEMAIL} -d ${VPNHOST}
     cp /etc/letsencrypt/live/${VPNHOST}/fullchain.pem /etc/ipsec.d/certs
     cp /etc/letsencrypt/live/${VPNHOST}/privkey.pem /etc/ipsec.d/private
 fi
