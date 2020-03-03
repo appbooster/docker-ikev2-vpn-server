@@ -6,10 +6,10 @@ services:
     container_name: ikev2-server
     privileged: true
     volumes:
-      - './data/certs/certs:/etc/ipsec.d/certs'
-      - './data/certs/private:/etc/ipsec.d/private'
-      - './data/certs/cacerts:/etc/ipsec.d/cacerts'
-      - './data/etc/ipsec.d/ipsec.secrets:/etc/ipsec.secrets'
+      - './data/certs/certs:/usr/local/etc/ipsec.d/certs'
+      - './data/certs/private:/usr/local/etc/ipsec.d/private'
+      - './data/certs/cacerts:/usr/local/etc/ipsec.d/cacerts'
+      - './data/etc/ipsec.d/ipsec.secrets:/usr/local/etc/ipsec.secrets'
     environment:
       - VPNHOST=
       - LEEMAIL=

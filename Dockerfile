@@ -23,7 +23,7 @@ COPY ./adduser.sh /adduser.sh
 
 RUN chmod 755 /run.sh /adduser.sh
 
-VOLUME ["/etc/ipsec.secrets"]
+VOLUME ["/usr/local/etc/ipsec.secrets"]
 
 EXPOSE 500:500/udp 4500:4500/udp
 

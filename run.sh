@@ -12,21 +12,21 @@ iptables -t nat -A POSTROUTING -s ${VPNIPPOOL} -o eth0 -j MASQUERADE
 
 iptables -L
 
-if [[ ! -f "/etc/ipsec.d/certs/fullchain.pem" && ! -f "/etc/ipsec.d/private/privkey.pem" ]] ; then
+if [[ ! -f "/usr/local/etc/ipsec.d/certs/fullchain.pem" && ! -f "/usr/local/etc/ipsec.d/private/privkey.pem" ]] ; then
     certbot certonly --standalone --preferred-challenges http --agree-tos --no-eff-email --email ${LEEMAIL} -d ${VPNHOST}
-    cp /etc/letsencrypt/live/${VPNHOST}/fullchain.pem /etc/ipsec.d/certs
-    cp /etc/letsencrypt/live/${VPNHOST}/privkey.pem /etc/ipsec.d/private
+    cp /usr/local/etc/letsencrypt/live/${VPNHOST}/fullchain.pem /usr/local/etc/ipsec.d/certs
+    cp /usr/local/etc/letsencrypt/live/${VPNHOST}/privkey.pem /usr/local/etc/ipsec.d/private
 fi
 
-if [ ! -f "/etc/ipsec.d/cacerts/lets-encrypt-x3-cross-signed.pem" ]; then
-    wget -P /etc/ipsec.d/cacerts https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
+if [ ! -f "/usr/local/etc/ipsec.d/cacerts/lets-encrypt-x3-cross-signed.pem" ]; then
+    wget -P /usr/local/etc/ipsec.d/cacerts https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
 fi
 
 rm -f /var/run/starter.charon.pid
 
-if [ -f "/etc/ipsec.conf" ]; then
-rm /etc/ipsec.conf
-cat >> /etc/ipsec.conf <<EOF
+if [ -f "/usr/local/etc/ipsec.conf" ]; then
+rm /usr/local/etc/ipsec.conf
+cat >> /usr/local/etc/ipsec.conf <<EOF
 config setup
     charondebug="ike 1, knl 1, cfg 1"
     uniqueids=no
@@ -58,7 +58,7 @@ conn ikev2-vpn
 EOF
 fi
 
-cat > /etc/ipsec.secrets <<EOF
+cat > /usr/local/etc/ipsec.secrets <<EOF
 : RSA privkey.pem
 EOF
 
