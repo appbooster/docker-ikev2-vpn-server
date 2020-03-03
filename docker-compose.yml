@@ -3,11 +3,13 @@ version: '3'
 services:
   vpn:
     build: .
-    command: /usr/bin/start-vpn
     container_name: ikev2-server
     privileged: true
     volumes:
-      - './data/certs:/etc/letsencrypt/live'
+      - './data/certs/certs:/etc/ipsec.d/certs'
+      - './data/certs/private:/etc/ipsec.d/private'
+      - './data/certs/cacerts:/etc/ipsec.d/cacerts'
+      - './data/etc/ipsec.d/ipsec.secrets:/etc/ipsec.secrets'
     environment:
       - VPNHOST=
       - LEEMAIL=

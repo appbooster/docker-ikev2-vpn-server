@@ -18,12 +18,13 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
     && rm -rf /tmp/* && apk del build-base curl openssl-dev build_deps && rm -rf /var/cache/apk/* \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY ./bin/start-vpn /usr/bin/start-vpn
+COPY ./run.sh /run.sh
 COPY ./adduser.sh /adduser.sh
 
-RUN chmod 755 /usr/bin/start-vpn /adduser.sh
+RUN chmod 755 /run.sh /adduser.sh
 
-VOLUME ["/usr/local/etc"]
+VOLUME ["/etc/ipsec.secrets"]
 
-# Open udp 500\4500 port
 EXPOSE 500:500/udp 4500:4500/udp
+
+CMD ["/run.sh"]
