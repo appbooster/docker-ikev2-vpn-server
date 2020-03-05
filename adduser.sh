@@ -18,7 +18,6 @@ esac
 VPN_PASSWORD="$(openssl rand -base64 9)"
 HOST="$(printenv VPNHOST)"
 
-echo "Server is: $HOST"
 echo "Password for user is: $VPN_PASSWORD"
 echo $VPN_USER : EAP \"$VPN_PASSWORD\">> /usr/local/etc/ipsec.secrets
 
