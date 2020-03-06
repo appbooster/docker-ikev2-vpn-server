@@ -3,7 +3,7 @@ version: '3'
 services:
   vpn:
     build: .
-    container_name: ikev2-server
+    container_name: ikev2-vpn-server
     privileged: true
     volumes:
       - './data/certs/certs:/usr/local/etc/ipsec.d/certs'
