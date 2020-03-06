@@ -14,8 +14,8 @@ iptables -L
 
 if [[ ! -f "/usr/local/etc/ipsec.d/certs/fullchain.pem" && ! -f "/usr/local/etc/ipsec.d/private/privkey.pem" ]] ; then
     certbot certonly --standalone --preferred-challenges http --agree-tos --no-eff-email --email ${LEEMAIL} -d ${VPNHOST}
-    cp /usr/local/etc/letsencrypt/live/${VPNHOST}/fullchain.pem /usr/local/etc/ipsec.d/certs
-    cp /usr/local/etc/letsencrypt/live/${VPNHOST}/privkey.pem /usr/local/etc/ipsec.d/private
+    cp /etc/letsencrypt/live/${VPNHOST}/fullchain.pem /usr/local/etc/ipsec.d/certs
+    cp /etc/letsencrypt/live/${VPNHOST}/privkey.pem /usr/local/etc/ipsec.d/private
 fi
 
 if [ ! -f "/usr/local/etc/ipsec.d/cacerts/lets-encrypt-x3-cross-signed.pem" ]; then
