@@ -6,12 +6,12 @@ Set VPNHOST (vpn domain, example: vpn1.example.com), LEEMAIL (email, for Let's E
 
 Run vpn server:
     
-    docker-compose up -d
+    docker-compose up -d OR ./start.sh (before set environment variables VPNHOST, LEEMAIL at .env file)
 
 ### Add user
 
-    docker exec -it ikev2-server ./adduser TestUser
+    docker exec -it ikev2-vpn-server ./adduser TestUser
     
 ### Remove user
     
-    docker exec -it ikev2-server ./rmuser TestUser
+    docker exec -it ikev2-vpn-server ./rmuser TestUser
