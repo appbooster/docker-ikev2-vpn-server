@@ -6,6 +6,7 @@ docker run \
     -p 4500:4500/udp \
     -p 80:80 \
     -v /lib/modules:/lib/modules:ro \
+    --cap-add=NET_ADMIN \
     -v "$PWD/data/certs/certs:/usr/local/etc/ipsec.d/certs" \
     -v "$PWD/data/certs/private:/usr/local/etc/ipsec.d/private" \
     -v "$PWD/data/certs/cacerts:/usr/local/etc/ipsec.d/cacerts" \
