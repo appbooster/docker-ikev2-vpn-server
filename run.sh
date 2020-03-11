@@ -7,6 +7,17 @@ sysctl net.ipv4.ip_forward=1
 sysctl net.ipv6.conf.all.forwarding=1
 sysctl net.ipv6.conf.eth0.proxy_ndp=1
 
+tc qdisc del dev eth0 root
+tc qdisc add dev eth0 root handle 1: htb
+for i in {1..254}
+do
+iptables -I FORWARD -s 10.15.1.$i -j MARK --set-mark 1$i
+iptables -I FORWARD -d 10.15.1.$i -j MARK --set-mark 1$i
+tc class add dev eth0 parent 1:1 classid 1:1$i htb rate 1mbit ceil 1mbit
+tc qdisc add dev eth0 parent 1:1$i sfq perturb 10
+tc filter add dev eth0 protocol ip parent 1: prio 1 handle 1$i fw flowid 1:1$i
+done
+
 iptables -t nat -A POSTROUTING -s ${VPNIPPOOL} -o eth0 -m policy --dir out --pol ipsec -j ACCEPT
 iptables -t nat -A POSTROUTING -s ${VPNIPPOOL} -o eth0 -j MASQUERADE
 
