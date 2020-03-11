@@ -24,8 +24,8 @@ Run vpn server with docker-compose:
 
 ### Add user
 
-    docker exec -it ikev2-vpn-server ./adduser TestUser
+    docker exec -it ikev2-vpn-server ./adduser.sh TestUser
     
 ### Remove user
     
-    docker exec -it ikev2-vpn-server ./rmuser TestUser
+    docker exec -it ikev2-vpn-server ./rmuser.sh TestUser
