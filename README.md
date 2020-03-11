@@ -2,11 +2,15 @@
 
 ## Usage
 ### Start the IKEv2 VPN Server
-Set VPNHOST (vpn domain, example: vpn1.example.com), LEEMAIL (email, for Let's Encrypt Certificates).
+Set VPNHOST (vpn domain, example: vpn1.example.com), LEEMAIL (email, for Let's Encrypt Certificates) at .env file.
 
 Run vpn server:
-    
-    docker-compose up -d OR ./start.sh (before set environment variables VPNHOST, LEEMAIL at .env file)
+
+    ./start.sh
+
+Run vpn server with docker-compose:
+
+    docker-compose up -d
 
 ### Add user
 

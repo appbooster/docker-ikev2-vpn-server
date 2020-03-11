@@ -10,9 +10,8 @@ services:
       - './data/certs/private:/usr/local/etc/ipsec.d/private'
       - './data/certs/cacerts:/usr/local/etc/ipsec.d/cacerts'
       - './data/etc/ipsec.d/ipsec.secrets:/usr/local/etc/ipsec.secrets'
-    environment:
-      - VPNHOST=
-      - LEEMAIL=
+    env_file:
+      - .env
     ports:
       - '500:500/udp'
       - '4500:4500/udp'
