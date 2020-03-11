@@ -7,7 +7,7 @@ sysctl net.ipv4.ip_forward=1
 sysctl net.ipv6.conf.all.forwarding=1
 sysctl net.ipv6.conf.eth0.proxy_ndp=1
 
-if [ -z "$SPEED_LIMIT" ] ; then
+if [ ! -z "$SPEED_LIMIT" ] ; then
 tc qdisc add dev eth0 handle 1: ingress
 tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip src 0.0.0.0/0 police rate ${SPEED_LIMIT}mbit burst 10k drop flowid :1
 tc qdisc add dev eth0 root tbf rate ${SPEED_LIMIT}mbit latency 25ms burst 10k
