@@ -1,0 +1,21 @@
+repository:
+  default_branch: master
+  allow_squash_merge: true
+  allow_merge_commit: true
+  allow_rebase_merge: true
+labels:
+  - name: blocked
+    color: e88bde
+  - name: bug
+    color: d73a4a
+  - name: good first issue
+    color: 7057ff
+  - name: high priority
+    color: b60205
+  - name: ready for review
+    color: 6ba1db
+  - name: release
+    color: 1d76db
+
+
+
