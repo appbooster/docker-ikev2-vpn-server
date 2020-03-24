@@ -14,6 +14,8 @@ LEEMAIL (email, for Let's Encrypt Certificates)
 
 SPEED_LIMIT (speed limit per user, example 2) if you want add limit bandwidth for users
 
+DNS_SERVERS yours DNS servers
+
 Run vpn server:
 
     ./start.sh

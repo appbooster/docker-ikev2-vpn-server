@@ -7,6 +7,12 @@ sysctl net.ipv4.ip_forward=1
 sysctl net.ipv6.conf.all.forwarding=1
 sysctl net.ipv6.conf.eth0.proxy_ndp=1
 
+if [ ! -z "$DNS_SERVERS" ] ; then
+DNS=$DNS_SERVERS
+else
+DNS="1.1.1.1,8.8.8.8"
+fi
+
 if [ ! -z "$SPEED_LIMIT" ] ; then
 tc qdisc add dev eth0 handle 1: ingress
 tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip src 0.0.0.0/0 police rate ${SPEED_LIMIT}mbit burst 10k drop flowid :1
@@ -35,7 +41,7 @@ rm /usr/local/etc/ipsec.conf
 cat >> /usr/local/etc/ipsec.conf <<EOF
 config setup
     charondebug="ike 1, knl 1, cfg 1"
-    uniqueids=no
+    uniqueids=never
 conn ikev2-vpn
     auto=add
     compress=no
@@ -58,7 +64,7 @@ conn ikev2-vpn
     rightid=%any
     rightauth=eap-mschapv2
     rightsourceip=10.15.1.0/24
-    rightdns=1.1.1.1,8.8.8.8
+    rightdns=$DNS
     rightsendcert=never
     eap_identity=%identity
 EOF
