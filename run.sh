@@ -57,6 +57,7 @@ conn ikev2-vpn
     leftsendcert=always
     leftsubnet=0.0.0.0/0
     leftfirewall=yes
+    leftupdown=/etc/strongswan-updown.sh
     right=%any
     rightid=%any
     rightauth=eap-mschapv2
