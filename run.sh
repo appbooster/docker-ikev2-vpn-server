@@ -56,7 +56,6 @@ conn ikev2-vpn
     leftcert=fullchain.pem
     leftsendcert=always
     leftsubnet=0.0.0.0/0
-    leftfirewall=yes
     leftupdown=/etc/strongswan-updown.sh
     right=%any
     rightid=%any

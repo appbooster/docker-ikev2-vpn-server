@@ -28,8 +28,9 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
 COPY ./run.sh /run.sh
 COPY ./adduser.sh /adduser.sh
 COPY ./rmuser.sh /rmuser.sh
+COPY ./data/etc/strongswan-updown.sh /etc/strongswan-updown.sh
 
-RUN chmod 755 /run.sh /adduser.sh /rmuser.sh
+RUN chmod 755 /run.sh /adduser.sh /rmuser.sh /etc/strongswan-updown.sh
 
 VOLUME ["/usr/local/etc/ipsec.secrets"]
 
