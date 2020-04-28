@@ -1,11 +1,11 @@
 #! /bin/sh
 case "$PLUTO_VERB:$1" in
 up-client:)
-  curl --location --request POST 'URL' \
-  {"action":"up","PLUTO_CONNECTION":$PLUTO_CONNECTION,"PLUTO_INTERFACE":$PLUTO_INTERFACE, "PLUTO_ME":$PLUTO_ME,"PLUTO_MY_ID":$PLUTO_MY_ID,"PLUTO_MY_CLIENT":$PLUTO_MY_CLIENT,"PLUTO_PEER_ID":$PLUTO_PEER_ID}
+  now=$(date +"%T")
+  echo "action: up, ${PLUTO_XAUTH_ID}: ${PLUTO_PEER} at $now"
   ;;
 down-client:)
-  curl --location --request POST 'URL' \
-  {"action":"down","PLUTO_CONNECTION":$PLUTO_CONNECTION,"PLUTO_INTERFACE":$PLUTO_INTERFACE, "PLUTO_ME":$PLUTO_ME,"PLUTO_MY_ID":$PLUTO_MY_ID,"PLUTO_MY_CLIENT":$PLUTO_MY_CLIENT,"PLUTO_PEER_ID":$PLUTO_PEER_ID}
+  now=$(date +"%T")
+  echo "action: down, ${PLUTO_XAUTH_ID}: ${PLUTO_PEER} at $now"
   ;;
 esac
