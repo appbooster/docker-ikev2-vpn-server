@@ -18,7 +18,7 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
     && curl -Lo /tmp/strongswan.tar.gz $SS_VERSION \
     && tar --strip-components=1 -C /tmp/strongswan -xf /tmp/strongswan.tar.gz \
     && cd /tmp/strongswan \
-    && ./configure  --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-tls --enable-eap-ttls --enable-eap-peap --enable-eap-tnc --enable-eap-dynamic --enable-xauth-eap  --enable-dhcp  --enable-openssl  --enable-addrblock --enable-unity --enable-certexpire --enable-radattr --enable-swanctl --enable-openssl --disable-gmp && make && make install \
+    && ./configure  --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-tls --enable-eap-ttls --enable-eap-peap --enable-eap-tnc --enable-eap-dynamic --enable-xauth-eap --enable-dhcp  --enable-openssl  --enable-addrblock --enable-unity --enable-certexpire --enable-radattr --enable-swanctl --enable-openssl --disable-gmp && make && make install \
     && rm -rf /tmp/* \
     && apk del build-base curl openssl-dev build_deps \
     && rm -rf /var/cache/apk/* \
