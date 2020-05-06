@@ -72,6 +72,29 @@ cat > /usr/local/etc/ipsec.secrets <<EOF
 : RSA privkey.pem
 EOF
 fi
+
+if [[ ! -z "$RADIUS_SERVER" && ! -z "$RADIUS_SERVER_SECRET" ]]; then
+rm /usr/local/etc/strongswan.d/charon/eap-radius.conf
+cat >> /usr/local/etc/strongswan.d/charon/eap-radius.conf <<EOF
+eap-radius {
+    accounting = yes
+    accounting_close_on_timeout = no
+    close_all_on_timeout = no
+    load = yes
+    nas_identifier = $VPNHOST
+
+    # Section to specify multiple RADIUS servers.
+    servers {
+        server-a {
+            address = $RADIUS_SERVER
+            secret = $RADIUS_SERVER_SECRET
+            auth_port = 1812   # default
+            acct_port = 1813   # default
+        }
+    }
+}
+EOF
+fi
 sysctl -p
 
 ipsec start --nofork

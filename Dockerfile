@@ -20,7 +20,7 @@ RUN apk --update add build-base curl bash iproute2 iptables-dev openssl openssl-
     && cd /tmp/strongswan \
     && ./configure  --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-tls --enable-eap-ttls --enable-eap-peap --enable-eap-tnc --enable-eap-dynamic --enable-xauth-eap --enable-dhcp --enable-openssl --enable-addrblock --enable-unity --enable-certexpire --enable-radattr --enable-swanctl --enable-eap-radius --disable-gmp && make && make install \
     && rm -rf /tmp/* \
-    && apk del build-base curl openssl-dev build_deps \
+    && apk del build-base openssl-dev build_deps \
     && rm -rf /var/cache/apk/* \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && rm /usr/local/etc/ipsec.secrets
