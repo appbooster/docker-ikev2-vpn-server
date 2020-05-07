@@ -84,7 +84,7 @@ eap-radius {
 
     # Section to specify multiple RADIUS servers.
     servers {
-        server-a {
+        primary {
             address = $RADIUS_SERVER
             secret = $RADIUS_SERVER_SECRET
             auth_port = 1812   # default
