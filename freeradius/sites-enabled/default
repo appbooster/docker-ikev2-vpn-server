@@ -841,10 +841,6 @@ post-auth {
 		# log failed authentications in SQL, too.
 		#-sql
 
-        if ( $ENV{RAD_DEBUG} == "yes" ) {
-	        sql
-        }
-
 		attr_filter.access_reject
 
 		# Insert EAP-Failure message if the request was
