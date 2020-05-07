@@ -20,6 +20,8 @@ services:
       - radius
     links:
       - radius
+    networks:
+      - backend
 
   radius:
     image: 'freeradius/freeradius-server:latest'
@@ -27,3 +29,10 @@ services:
     volumes:
       - './freeradius/clients.conf:/etc/raddb/clients.conf'
     command: radiusd -X
+    networks:
+      - backend
+networks:
+  backend:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
