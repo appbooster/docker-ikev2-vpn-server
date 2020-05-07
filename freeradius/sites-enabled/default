@@ -11,7 +11,7 @@
 #	the "inner-tunnel" virtual server.  You will likely have to edit
 #	that, too, for authentication to work.
 #
-#	$Id: 3616050e7625eb6b5e2ba44782fcb737b2ae6136 $
+#	$Id: c60c0ba4c8728fac10b190dbb3b752f9df317c07 $
 #
 ######################################################################
 #
@@ -150,6 +150,17 @@ listen {
 	#  See clients.conf for the configuration of "per_socket_clients".
 	#
 #	clients = per_socket_clients
+
+	#
+	#  Set the default UDP receive buffer size.  In most cases,
+	#  the default values set by the kernel are fine.  However, in
+	#  some cases the NASes will send large packets, and many of
+	#  them at a time.  It is then possible to overflow the
+	#  buffer, causing the kernel to drop packets before they
+	#  reach FreeRADIUS.  Increasing the size of the buffer will
+	#  avoid these packet drops.
+	#
+#	recv_buff = 65536
 
 	#
 	#  Connection limiting for sockets with "proto = tcp".
@@ -295,7 +306,7 @@ authorize {
 	#  attributes in the request, and turning them into attributes
 	#  which are more standard.
 	#
-	#  It takes care of processing the 'raddb/mods-config/preprocess/hints' 
+	#  It takes care of processing the 'raddb/mods-config/preprocess/hints'
 	#  and the 'raddb/mods-config/preprocess/huntgroups' files.
 	preprocess
 
@@ -351,11 +362,7 @@ authorize {
 #	IPASS
 
 	#
-	#  If you are using multiple kinds of realms, you probably
-	#  want to set "ignore_null = yes" for all of them.
-	#  Otherwise, when the first style of realm doesn't match,
-	#  the other styles won't be checked.
-	#
+	# Look for realms in user@domain format
 	suffix
 #	ntdomain
 
@@ -381,7 +388,7 @@ authorize {
 	#
 	eap {
 		ok = return
-		updated = return
+#		updated = return
 	}
 
 	#
@@ -402,9 +409,8 @@ authorize {
 	#  is meant to mirror the "users" file.
 	#
 	#  See "Authorization Queries" in mods-available/sql
-	#-sql
-	sql
-	
+	-sql
+
 	#
 	#  If you are using /etc/smbpasswd, and are also doing
 	#  mschap authentication, the un-comment this line, and
@@ -554,9 +560,6 @@ authenticate {
 #  Pre-accounting.  Decide which accounting type to use.
 #
 preacct {
-        # Mask Source IP in Calling-Station-Id and NAS-IP-Address
-        mask_accounting_data
-
 	preprocess
 
 	#
@@ -610,6 +613,7 @@ preacct {
 #  Accounting.  Log the accounting data.
 #
 accounting {
+	rest
 	#  Update accounting packet by adding the CUI attribute
 	#  recorded from the corresponding Access-Accept
 	#  use it only if your NAS boxes do not support CUI themselves
@@ -618,13 +622,13 @@ accounting {
 	#  Create a 'detail'ed log of the packets.
 	#  Note that accounting requests which are proxied
 	#  are also logged in the detail file.
-#	detail
+	detail
 #	daily
 
 	#  Update the wtmp file
 	#
 	#  If you don't use "radlast", you can delete this line.
-#	unix
+	unix
 
 	#
 	#  For Simultaneous-Use tracking.
@@ -635,14 +639,13 @@ accounting {
 #	sradutmp
 
 	#  Return an address to the IP Pool when we see a stop record.
-#	main_pool
+#	sqlippool
 
 	#
 	#  Log traffic to an SQL database.
 	#
 	#  See "Accounting queries" in mods-available/sql
-	#-sql
-	rest
+	-sql
 
 	#
 	#  If you receive stop packets with zero session length,
@@ -684,7 +687,7 @@ session {
 
 	#
 	#  See "Simultaneous Use Checking Queries" in mods-available/sql
-	sql
+#	sql
 }
 
 
@@ -712,17 +715,35 @@ post-auth {
 	#  The session-state attributes are automatically deleted after
 	#  an Access-Reject or Access-Accept is sent.
 	#
+	#  If both session-state and reply contain a User-Name attribute, remove
+	#  the one in the reply if it is just a copy of the one in the request, so
+	#  we don't end up with two User-Name attributes.
+
+	if (session-state:User-Name && reply:User-Name && request:User-Name && (reply:User-Name == request:User-Name)) {
+		update reply {
+			&User-Name !* ANY
+		}
+	}
 	update {
 		&reply: += &session-state:
 	}
 
-	#  Get an address from the IP Pool.
-#	main_pool
+	#  Refresh leases when we see a start or alive. Return an address to
+	#  the IP Pool when we see a stop record.
+#	sqlippool
 
 
 	#  Create the CUI value and add the attribute to Access-Accept.
 	#  Uncomment the line below if *returning* the CUI.
 #	cui
+
+	#  Create empty accounting session to make simultaneous check
+	#  more robust. See the accounting queries configuration in
+	#  raddb/mods-config/sql/main/*/queries.conf for details.
+	#
+	#  The "sql_session_start" policy is defined in
+	#  raddb/policy.d/accounting.  See that file for more details.
+#	sql_session_start
 
 	#
 	#  If you want to have a log of authentication replies,
@@ -734,13 +755,7 @@ post-auth {
 	#  After authenticating the user, do another SQL query.
 	#
 	#  See "Authentication Logging Queries" in mods-available/sql
-	#-sql
-
-	#
-	#  Instead of sending the query to the SQL server,
-	#  write it into a log file.
-	#
-#	sql_log
+	-sql
 
 	#
 	#  Un-comment the following if you want to modify the user's object
@@ -756,7 +771,7 @@ post-auth {
 	#  you will need to define the WiMAX NAI, usually via
 	#
 	#	update request {
-	#	       WiMAX-MN-NAI = "%{User-Name}"
+	#	       &WiMAX-MN-NAI = "%{User-Name}"
 	#	}
 	#
 	#  If you want various keys to be calculated, you will need to
@@ -765,8 +780,8 @@ post-auth {
 	#  taken from the cryptographic calculations.  e.g.
 	#
 	# 	update reply {
-	#		WiMAX-FA-RK-Key = 0x00
-	#		WiMAX-MSK = "%{EAP-MSK}"
+	#		&WiMAX-FA-RK-Key = 0x00
+	#		&WiMAX-MSK = "%{reply:EAP-MSK}"
 	#	}
 	#
 	#  You may want to delete the MS-MPPE-*-Keys from the reply,
@@ -833,14 +848,13 @@ post-auth {
 	#  post-auth section.
 	#
 	#  Add the ldap module name (or instance) if you have set
-	#  'edir_account_policy_check = yes' in the ldap module configuration
+	#  'edir = yes' in the ldap module configuration
 	#
 	#  The "session-state" attributes are not available here.
 	#
 	Post-Auth-Type REJECT {
 		# log failed authentications in SQL, too.
-		#-sql
-
+		-sql
 		attr_filter.access_reject
 
 		# Insert EAP-Failure message if the request was
@@ -939,12 +953,19 @@ post-proxy {
 	#  will read the detail file, and send the packets to the
 	#  home server.
 	#
+	#  See the "mods-available/detail.example.com" file for more
+	#  details on writing a detail file specifically for one
+	#  destination.
+	#
+	#  See the "sites-available/robust-proxy-accounting" virtual
+	#  server for more details on reading this "detail" file.
+	#
 	#  With this configuration, the server always responds to
 	#  Accounting-Requests from the NAS, but only writes
 	#  accounting packets to disk if the home server is down.
 	#
 #	Post-Proxy-Type Fail-Accounting {
-#			detail
+#			detail.example.com
 #	}
 }
 }
