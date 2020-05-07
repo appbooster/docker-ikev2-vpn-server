@@ -736,10 +736,6 @@ post-auth {
 	#  See "Authentication Logging Queries" in mods-available/sql
 	#-sql
 
-    if ( $ENV{RAD_DEBUG} == "yes" ) {
-	  sql
-    }
-
 	#
 	#  Instead of sending the query to the SQL server,
 	#  write it into a log file.
