@@ -28,6 +28,10 @@ services:
     container_name: freeradius-server
     volumes:
       - './freeradius/clients.conf:/etc/raddb/clients.conf'
+      - './freeradius/mods-enabled/rest:/etc/raddb/mods-enabled/rest'
+      - './freeradius/site-enabled/default:/etc/raddb/site-enabled/default'
+    env_file:
+      - .env
     command: radiusd -X
     networks:
       - backend
