@@ -172,11 +172,11 @@ rest {
 	#  5xx    server error  no            fail
 	#  xxx    -             no            invalid
 	accounting {
-		uri = "${..connect_uri}/sessions/%{Acct-Unique-Session-ID}/login/%{User-Name}"
+		uri = "${..connect_uri}/vpn_sessions/%{Acct-Unique-Session-ID}"
     method = 'post'
     tls = ${..tls}
     body = json
-    data = "Username:%{User-Name} NAS-Port:%{NAS-Port} NAS-IP-Address:%{NAS-IP-Address} Framed-IP-Address:%{Framed-IP-Address} Framed-IPv6-Prefix:%{Framed-IPv6-Prefix} NAS-Identifier:%{NAS-Identifier} Airespace-Wlan-Id:%{Airespace-Wlan-Id} Acct-Session-Id:%{Acct-Session-Id} NAS-Port-Type:%{NAS-Port-Type} Cisco-AVPair:%{Cisco-AVPair} Acct-Authentic:%{Acct-Authentic} Tunnel-Type:%{Tunnel-Type} Tunnel-Medium-Type:%{Tunnel-Medium-Type} Tunnel-Private-Group-Id:%{Tunnel-Private-Group-Id} Event-Timestamp:%{Event-Timestamp} Acct-Status-Type:%{Acct-Status-Type} Acct-Input-Octets:%{Acct-Input-Octets} Acct-Input-Gigawords:%{Acct-Input-Gigawords} Acct-Output-Octets:%{Acct-Output-Octets} Acct-Output-Gigawords:%{Acct-Output-Gigawords} Acct-Input-Packets:%{Acct-Input-Packets} Acct-Output-Packets:%{Acct-Output-Packets} Acct-Terminate-Cause:%{Acct-Terminate-Cause} Acct-Session-Time:%{Acct-Session-Time} Acct-Delay-Time:%{Acct-Delay-Time} Calling-Station-Id:%{Calling-Station-Id} Called-Station-Id:%{Called-Station-Id}"
+    data = '{ "username": "%{User-Name}", "nas_port": "%{NAS-Port}", "nas_ip_address": "%{NAS-IP-Address}", "framed_ip_address": "%{Framed-IP-Address}", "framed_ipv6_prefix": "%{Framed-IPv6-Prefix}", "nas_identifier": "%{NAS-Identifier}", "airespace_wlan_id": "%{Airespace-Wlan-Id}", "acct_session_id": "%{Acct-Session-Id}", "nas_port_type": "%{NAS-Port-Type}", "cisco_avpair": "%{Cisco-AVPair}", "acct_authentic": "%{Acct-Authentic}", "tunnel_type": "%{Tunnel-Type}", "tunnel_medium_type": "%{Tunnel-Medium-Type}", "tunnel_private_group_id": "%{Tunnel-Private-Group-Id}", "event_timestamp": "%{Event-Timestamp}", "acct_status_type": "%{Acct-Status-Type}", "acct_input_octets": "%{Acct-Input-Octets}", "acct_input_gigawords": "%{Acct-Input-Gigawords}", "acct_output_octets": "%{Acct-Output-Octets}", "acct_output_gigawords": "%{Acct-Output-Gigawords}", "acct_input_packets": "%{Acct-Input-Packets}", "acct_output_packets": "%{Acct-Output-Packets}", "acct_terminate_cause": "%{Acct-Terminate-Cause}", "acct_session_time": "%{Acct-Session-Time}", "acct_delay_time": "%{Acct-Delay-Time}", "calling_station_id": "%{Calling-Station-Id}", "called_station_id": "%{Called-Station-Id}"}'
 
 	}
 	post-auth {
