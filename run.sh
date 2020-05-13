@@ -78,6 +78,7 @@ cat >> /usr/local/etc/strongswan.d/charon/eap-radius.conf <<EOF
 eap-radius {
     accounting = yes
     accounting_close_on_timeout = no
+    accounting_interval = 60
     close_all_on_timeout = no
     load = yes
     nas_identifier = $VPNHOST
