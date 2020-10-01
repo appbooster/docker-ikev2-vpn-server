@@ -14,7 +14,13 @@ LEEMAIL (email, for Let's Encrypt Certificates)
 
 SPEED_LIMIT (speed limit per user, example 2) if you want add limit bandwidth for users
 
-DNS_SERVERS yours DNS servers
+DNS_SERVERS (yours DNS servers)
+
+RADIUS_SERVER (your radius server address)
+
+RADIUS_SERVER_SECRET (secret key for radius server)
+
+REMOTE_SERVER your server url (https://www.example.com) to which data will be sent
 
 Run vpn server:
 
